@@ -27,6 +27,8 @@ def main():
     cur.execute(
         f"""
         CREATE TABLE {GOLD_SCHEMA}.{DM_TABLE} (
+            _dlt_id TEXT,
+            _dlt_load_id TEXT,
             selector_a TEXT,
             selector_b TEXT,
             name_a TEXT,
@@ -38,8 +40,18 @@ def main():
     )
 
     union_sql_parts = [
-        f"SELECT selector_a, selector_b, name_a, name_b, date_of_interaction, other_info "
-        f"FROM {GOLD_SCHEMA}.{t}"
+        f"""
+        SELECT
+            _dlt_id,
+            _dlt_load_id,
+            selector_a,
+            selector_b,
+            name_a,
+            name_b,
+            date_of_interaction,
+            other_info
+        FROM {GOLD_SCHEMA}.{t}
+        """
         for t in TEMP_TABLES
     ]
     union_sql = " UNION ALL ".join(union_sql_parts)
@@ -47,7 +59,14 @@ def main():
     cur.execute(
         f"""
         INSERT INTO {GOLD_SCHEMA}.{DM_TABLE} (
-            selector_a, selector_b, name_a, name_b, date_of_interaction, other_info
+            _dlt_id,
+            _dlt_load_id,
+            selector_a,
+            selector_b,
+            name_a,
+            name_b,
+            date_of_interaction,
+            other_info
         )
         {union_sql};
         """

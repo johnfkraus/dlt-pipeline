@@ -8,7 +8,7 @@ def normalize_empty(value: str | None) -> str:
     if value is None:
         return UNKNOWN
     v = str(value).strip()
-    if v == "" or v.lower() == "none" or v.lower() == "null":
+    if v == "" or v.lower() in ("none", "null"):
         return UNKNOWN
     return v
 
@@ -44,9 +44,7 @@ def normalize_phone_cn(value: str | None) -> str:
         return v
     digits = re.sub(r"\D", "", v)
     if digits.startswith("86") and len(digits) > 11:
-        # remove leading country code if present
         digits = digits[2:]
     if len(digits) == 11:
         return "+86" + digits
-    # unknown or malformed
     return UNKNOWN

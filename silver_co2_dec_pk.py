@@ -1,11 +1,11 @@
-# silver_co3.py
+# silver_co2.py
 import psycopg2
 from common_utils import normalize_date, normalize_name, normalize_phone_cn, normalize_empty
 
 BRONZE_SCHEMA = "bronze"
 SILVER_SCHEMA = "silver"
-BRONZE_TABLE = "co3_bronze"
-SILVER_TABLE = "co3_silver"
+BRONZE_TABLE = "co2_bronze"
+SILVER_TABLE = "co2_silver"
 
 def main():
     conn = psycopg2.connect(
@@ -24,6 +24,8 @@ def main():
     cur.execute(
         f"""
         CREATE TABLE {SILVER_SCHEMA}.{SILVER_TABLE} (
+            _dlt_id TEXT,
+            _dlt_load_id TEXT,
             selector_a TEXT,
             selector_b TEXT,
             name_a TEXT,
@@ -38,15 +40,34 @@ def main():
 
     cur.execute(
         f"""
-        SELECT selector_a, selector_b, name_a, name_b,
-               date_of_interaction, additional_info, comment, dataset_name
+        SELECT _dlt_id,
+               _dlt_load_id,
+               selector_a,
+               selector_b,
+               name_a,
+               name_b,
+               date_of_interaction,
+               additional_info,
+               comment,
+               dataset_name
         FROM {BRONZE_SCHEMA}.{BRONZE_TABLE};
         """
     )
 
     rows = cur.fetchall()
     for row in rows:
-        selector_a, selector_b, name_a, name_b, d_int, add_info, comment, dataset = row
+        (
+            dlt_id,
+            dlt_load_id,
+            selector_a,
+            selector_b,
+            name_a,
+            name_b,
+            d_int,
+            add_info,
+            comment,
+            dataset,
+        ) = row
 
         selector_a_n = normalize_phone_cn(selector_a)
         selector_b_n = normalize_phone_cn(selector_b)
@@ -60,12 +81,22 @@ def main():
         cur.execute(
             f"""
             INSERT INTO {SILVER_SCHEMA}.{SILVER_TABLE} (
-                selector_a, selector_b, name_a, name_b,
-                date_of_interaction, additional_info, comment, dataset_name
+                _dlt_id,
+                _dlt_load_id,
+                selector_a,
+                selector_b,
+                name_a,
+                name_b,
+                date_of_interaction,
+                additional_info,
+                comment,
+                dataset_name
             )
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
             """,
             (
+                dlt_id,
+                dlt_load_id,
                 selector_a_n,
                 selector_b_n,
                 name_a_n,

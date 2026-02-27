@@ -1,11 +1,11 @@
-# gold_co1.py
+# gold_co3.py
 import psycopg2
 import json
 
 SILVER_SCHEMA = "silver"
 GOLD_SCHEMA = "gold"
-SILVER_TABLE = "co1_silver"
-GOLD_TEMP_TABLE = "co1_gold_temp"
+SILVER_TABLE = "co3_silver"
+GOLD_TEMP_TABLE = "co3_gold_temp"
 
 def main():
     conn = psycopg2.connect(
@@ -24,6 +24,8 @@ def main():
     cur.execute(
         f"""
         CREATE TABLE {GOLD_SCHEMA}.{GOLD_TEMP_TABLE} (
+            _dlt_id TEXT,
+            _dlt_load_id TEXT,
             selector_a TEXT,
             selector_b TEXT,
             name_a TEXT,
@@ -36,43 +38,63 @@ def main():
 
     cur.execute(
         f"""
-        SELECT contact, target, person_a, person_b,
-               date_of_first_interaction, date_of_last_interaction,
-               additional_info, dataset_name
+        SELECT _dlt_id,
+               _dlt_load_id,
+               selector_a,
+               selector_b,
+               name_a,
+               name_b,
+               date_of_interaction,
+               additional_info,
+               comment,
+               dataset_name
         FROM {SILVER_SCHEMA}.{SILVER_TABLE};
         """
     )
 
     rows = cur.fetchall()
     for row in rows:
-        contact, target, person_a, person_b, d_first, d_last, additional, dataset = row
-
-        selector_a = contact
-        selector_b = target
-        name_a = person_a
-        name_b = person_b
-        date_of_interaction = d_first
+        (
+            dlt_id,
+            dlt_load_id,
+            selector_a,
+            selector_b,
+            name_a,
+            name_b,
+            d_int,
+            additional,
+            comment,
+            dataset,
+        ) = row
 
         other = {
             "additional_info": additional,
             "dataset_name": dataset,
-            "date_of_last_interaction": d_last,
+            "comment": comment,
         }
 
         cur.execute(
             f"""
             INSERT INTO {GOLD_SCHEMA}.{GOLD_TEMP_TABLE} (
-                selector_a, selector_b, name_a, name_b,
-                date_of_interaction, other_info
-            )
-            VALUES (%s,%s,%s,%s,%s,%s::jsonb);
-            """,
-            (
+                _dlt_id,
+                _dlt_load_id,
                 selector_a,
                 selector_b,
                 name_a,
                 name_b,
                 date_of_interaction,
+                other_info
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s::jsonb);
+            """,
+            (
+                dlt_id,
+                dlt_load_id,
+                selector_a,
+                selector_b,
+                name_a,
+                name_b,
+                d_int,
                 json.dumps(other),
             ),
         )
@@ -82,3 +104,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
