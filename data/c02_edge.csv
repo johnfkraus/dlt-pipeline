@@ -1,0 +1,10 @@
+selector_a,selector_b,name_a,name_b,date_of_interaction,additional_info,comment,dataset_name
+,,,"","",,,""
+"   ","   ","   ","   ","   ","   ","   ",co2
++86 (010) 1234 5678,86-010-1234-5678, Li Ming , ,2024-00-10,"Zero month","Bad month in ISO format",co2
+13123456789X,1A323456789,Chen Jie,Sun Lei,2024-02-30,"Bad day","Non-existent day",co2
+"None","none","None","none",None,None,None,co2
+" ","",Wu Gang,He Ping,32/13/2024,"Day>31, month>12","European-style but invalid",co2
++86-,,,,2024/13/01,"Missing phone digits","Slash date with bad month",co2
+1701234567,1701234567890,Zhang San,Li Si,202402,,"Too short/long phone, yyyymm (ambiguous)",co2
+170 1234 5678, ,  ,Ma Ba,2024.2.3,"Dotted date, minimal name","",co2

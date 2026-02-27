@@ -1,0 +1,9 @@
+contact,target,person_a,person_b,date_of_first_interaction,date_of_last_interaction,additional_info,dataset_name
+, , , ,"","",,co1
+"   ","None","   Alice  ","  Bob   ","2024-13-01","2024-02-30","Invalid months and days",co1
++86 1380013800X,13900ABC001,Chen Wei,Liu Fang,2024/02/30,2024/02/29,"Non-numeric in phone, impossible dates",co1
+NULL,null,NULL,null,20240230,2024.02.29,"Upper/lower null, yyyymmdd and dotted date",co1
+""," ",Zhang Yan,Gao Peng,2024-02-29,29/02/2023,"Leap-year edge and dd/mm/yyyy",co1
++86-00000000000,+86 123, , ,not_a_date,2024-00-10,"Clearly malformed date and phone",co1
+" 15012345678 ","1501234567890", "  ","  ",2024/2/5,5/2/2024,"Single-digit month/day in different orders",co1
+"None","",Alice,,none,Null,"Text none/Null in date",co1

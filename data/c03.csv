@@ -1,0 +1,6 @@
+selector_a,selector_b,name_a,name_b,date_of_interaction,additional_info,comment,dataset_name
++86 15512345678,+86-15623456789,  Wang Wu ,Zheng Liu,2023-11-01,"Old client reactivation","Scheduled onsite visit",co3
+155-1234-5679,156 2345 6780, Hu Yi ,  Ma Ba ,11/05/2023,"Asked about new product","Price sensitive",co3
+(029) 3333 4444,028-2222-3333,  Zhou Jiu ,Qin Shi,2023/12/15,"Year-end review","Good upsell potential",co3
+17012345670,,  , , ,,"Completely missing counterpart",co3
+None,  ,None,None, , ,"Edge case null-like values",co3

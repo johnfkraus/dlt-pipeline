@@ -1,0 +1,6 @@
+selector_a,selector_b,name_a,name_b,date_of_interaction,additional_info,comment,dataset_name
++86 13123456789, +86-13234567890,  Li Ming ,Zhao Qian,2024-05-10,"Discussed partnership","Very interested",co2
+131-2345-6788,132 3456 7891,Chen Jie,  Sun Lei ,15/05/2024,"Requested pricing","Follow up next week",co2
+(020) 5555 6666,025-7777-8888,  Wu Gang ,He Ping,2024/06/01,"Demo scheduled","None",co2
+,170 1234 5678,  ,Yu Yan ,06/10/2024,"Inbound call","Missing caller number",co2
+None,None,  Zhang San , Li Si ,20240620,"Test row with Nones","",co2

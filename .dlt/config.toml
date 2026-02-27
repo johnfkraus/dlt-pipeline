@@ -1,0 +1,8 @@
+# .dlt/config.toml
+
+[core]
+# default destination if not passed explicitly
+destination = "postgres"
+
+[experiments]
+# enable/disable dlt experimental features if desired
