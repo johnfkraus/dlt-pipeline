@@ -5,7 +5,7 @@ from datetime import datetime
 UNKNOWN = "Unknown"
 
 
-def get_latest_schema_with_table(conn, schema_prefix, table_name):
+def get_latest_schema_containing_named_table(conn, schema_prefix, table_name):
     """
     Return the name of the most recently created schema (by OID)
     whose name starts with `schema_prefix` and that contains
@@ -32,7 +32,10 @@ def get_latest_schema_with_table(conn, schema_prefix, table_name):
             }
         )
         row = cur.fetchone()
-        return row[0] if row else None
+        result = row[0] if row else None
+        print(f"get_latest_schema_containing_named_table: {result}")
+        # return row[0] if row else None
+        return result
 
 
 def normalize_empty(value: str | None) -> str:

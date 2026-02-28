@@ -19,3 +19,8 @@ dev_mode = "true"
 [pipeline.bronze_c02]
 dataset_name = "bronze"
 dev_mode = "true"
+
+
+[destination.postgres]
+# single shared staging schema for all datasets
+staging_dataset_name_layout = "_dlt_staging"
