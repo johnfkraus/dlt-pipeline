@@ -4,6 +4,37 @@ from datetime import datetime
 
 UNKNOWN = "Unknown"
 
+
+def get_latest_schema_with_table(conn, schema_prefix, table_name):
+    """
+    Return the name of the most recently created schema (by OID)
+    whose name starts with `schema_prefix` and that contains
+    a base table named `table_name`. Returns None if not found.
+    """
+    query = """
+        SELECT n.nspname AS schema_name
+        FROM pg_catalog.pg_namespace n
+        JOIN information_schema.tables t
+          ON t.table_schema = n.nspname
+        WHERE n.nspname LIKE %(prefix)s
+          AND t.table_name = %(table)s
+          AND t.table_type = 'BASE TABLE'
+        ORDER BY n.oid DESC
+        LIMIT 1;
+    """
+
+    with conn.cursor() as cur:
+        cur.execute(
+            query,
+            {
+                "prefix": schema_prefix + "%",  # prefix match
+                "table": table_name
+            }
+        )
+        row = cur.fetchone()
+        return row[0] if row else None
+
+
 def normalize_empty(value: str | None) -> str:
     if value is None:
         return UNKNOWN

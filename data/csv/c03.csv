@@ -1,0 +1,6 @@
+selector_a,selector_b,name_a,name_b,date_of_interaction,additional_info,comment,dataset_name
++86 15512345678,-15623456703,  Wang Wu ,Zheng Liu,11/1/23,Old client reactivation,Scheduled onsite visit,c03
+155-1234-5679,156 2345 6780, Hu Yi ,  Ma Ba ,11/5/23,Asked about new product,Price sensitive,c03
+(029) 3333 4444,028-2222-3333,  Zhou Jiu ,Qin Shi,12/15/23,Year-end review,Good upsell potential,c03
+17012345670,,  , , ,,Completely missing counterpart,c03
+None,  ,None,None, , ,Edge case null-like values,c03

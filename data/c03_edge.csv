@@ -1,9 +1,0 @@
-selector_a,selector_b,name_a,name_b,date_of_interaction,additional_info,comment,dataset_name
-NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
-"","+86 15512345678","  ","Zheng Liu","",,"Empty date and names",co3
-+86 1551234567A,+86-1562345B789,Hu Yi, Ma Ba ,2024/2/30,"Invalid day","Alpha chars in phone",co3
-(029)3333-4444,028 2222 3333, Zhou Jiu , Qin Shi ,2024/13/01,"Month 13","Slash date invalid",co3
-"   17012345670   "," 86 170 1234 5671 ",,,"not_a_date","Free text date","",co3
-"None"," ","None",,"2024-2-3","Unpadded month/day","Text none in phones and names",co3
-155-1234-5679,156 2345 6780,"","",0000-00-00,"Zeroed date","All zeros",co3
-,,"   Alice","Bob   ","02/31/2024","US-style invalid date","",co3

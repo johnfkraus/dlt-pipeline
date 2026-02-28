@@ -5,17 +5,17 @@ GOLD_SCHEMA = "gold"
 DM_TABLE = "interactions_mart"
 
 TEMP_TABLES = [
-    "co1_gold_temp",
-    "co2_gold_temp",
-    "co3_gold_temp",
+    "c01_gold_temp",
+    "localhost_gold_temp",
+    "c03_gold_temp",
 ]
 
 def main():
     conn = psycopg2.connect(
-        dbname="your_db",
-        user="your_user",
-        password="your_password",
-        host="your_host",
+        dbname="comms",
+        user="postgres",
+        password="postgres",
+        host="localhost",
         port="5432",
     )
     conn.autocommit = True

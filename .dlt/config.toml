@@ -6,3 +6,16 @@ destination = "postgres"
 
 [experiments]
 # enable/disable dlt experimental features if desired
+
+[env]
+# Treat any non-empty value as true in code
+dev_mode = "true"
+dataset_name = "bronze"
+
+[pipeline.bronze_c01]
+dataset_name = "bronze"
+dev_mode = "true"
+
+[pipeline.bronze_c02]
+dataset_name = "bronze"
+dev_mode = "true"
