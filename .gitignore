@@ -3,3 +3,4 @@ archives
 .idea
 .dlt/secrets.toml
 .venv
+**/~*.xlsx
