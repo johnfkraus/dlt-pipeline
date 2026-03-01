@@ -16,7 +16,6 @@ dataset_name
 """
 
 import psycopg2
-# import json
 import polars as pl
 import tomllib  # Python 3.11+; use `tomli` for older versions
 from psycopg2.extras import Json  # helps adapt dict → jsonb [web:207][web:212]
