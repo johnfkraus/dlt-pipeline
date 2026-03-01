@@ -40,30 +40,16 @@ def main():
     with conn:
         list_of_dfs = []
         for table_name in TABLE_NAMES:
-
-            # conn.autocommit = True
-            # 1) Load silver data into Polars; source table
+            # 1) Load temp gold tables into Polars; source table
             df = pl.read_database(f"SELECT * FROM {GOLD_SCHEMA}.{table_name};", conn)
 
-            # with conn.cursor() as cur:
-            #     cur.execute(
-            #         f"""
-            #         SELECT *
-            #         FROM {GOLD_SCHEMA}.{table_name};
-            #         """
-            #     )
-            #     rows = cur.fetchall()
-            #     col_names = [desc[0] for desc in cur.description]
-            #
-            #     df = pl.DataFrame(rows, schema=col_names, orient="row")
-            #     # print("gold data df.head():")
-            #     # print(df.head())
             list_of_dfs.append(df)
 
-        # pl.Config.set_fmt_str_lengths(200)  # Shows up to 100 characters
-        # print(df['other_info'])
+            # pl.Config.set_fmt_str_lengths(200)  # Shows up to 100 characters
+            # print(df['other_info'])
 
         df_mart = pl.concat(list_of_dfs, how="vertical")
+
         # print(df_mart)
 
         df_mart.write_database(
@@ -72,24 +58,16 @@ def main():
             engine="adbc",
             if_table_exists="replace"  # or "append", "fail"
         )
+        # inspect the finished mart
+        df_mart_check = pl.read_database(
+            f"SELECT * FROM {GOLD_SCHEMA}.{MART_TABLE_NAME}",
+            conn,
+        )
+        print("comms mart final table:")
+        print(df_mart_check)
 
-        # cur.executemany(insert_sql, records)
-        # Inspect the temp gold table
-        # cur.execute(
-        #     f"""
-        #     SELECT *
-        #     FROM {GOLD_SCHEMA}.{MART_TABLE_NAME};
-        #     """
-        # )
-        # rows = cur.fetchall()
-        # col_names = [desc[0] for desc in cur.description]
-        #
-        # df = pl.DataFrame(rows, schema=col_names, orient="row")
-        # print("gold data df.head():")
         # print(df.head())
         # pl.Config.set_fmt_str_lengths(200)  # Shows up to 100 characters
-
-
 
 
 if __name__ == "__main__":
