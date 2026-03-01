@@ -1,7 +1,21 @@
 # silver_c01_polars.py
+
+info = """
+spreadsheet columns > silver
+selector_a
+selector_b
+name_a
+name_b
+date_of_interaction
+additional_info
+comment
+dataset_name
+
+"""
+
 import psycopg2
 import polars as pl
-import tomllib   # Python 3.11+; use `tomli` for older versions
+import tomllib  # Python 3.11+; use `tomli` for older versions
 from pathlib import Path
 from timer import get_time
 
@@ -9,19 +23,19 @@ from common_utils import (
     normalize_date,
     normalize_name,
     normalize_phone_cn,
+    normalize_phone_cn_target,
     normalize_empty,
     get_latest_schema_containing_named_table
 )
 
 BRONZE_SCHEMA_PREFIX = "bronze"
 SILVER_SCHEMA = "silver"
-BRONZE_TABLE = "c01_bronze"
-SILVER_TABLE = "c01_silver"
-
+TABLE_NAME = "c02"
+NONE = "None"
 
 def load_db_params_from_secrets(
-    path: str = ".dlt/secrets.toml",
-    section: str = "destination.postgres.credentials",
+        path: str = ".dlt/secrets.toml",
+        section: str = "destination.postgres.credentials",
 ) -> dict:
     """
     Read Postgres connection parameters from .dlt/secrets.toml.
@@ -57,6 +71,7 @@ def load_db_params_from_secrets(
         "port": dest_cfg.get("port", 5432),
     }
 
+
 @get_time
 def main():
     conn_params = load_db_params_from_secrets()
@@ -69,9 +84,8 @@ def main():
 
     with conn:
 
-        BRONZE_SCHEMA = get_latest_schema_containing_named_table(conn, BRONZE_SCHEMA_PREFIX, BRONZE_TABLE)
+        BRONZE_SCHEMA = get_latest_schema_containing_named_table(conn, BRONZE_SCHEMA_PREFIX, TABLE_NAME)
         print(f"BRONZE_SCHEMA: {BRONZE_SCHEMA}")
-
         # conn.autocommit = True
 
         # 1) Load bronze data into Polars
@@ -81,53 +95,63 @@ def main():
                 SELECT
                     _dlt_id,
                     _dlt_load_id,
-                    contact,
-                    target,
-                    person_a,
-                    person_b,
-                    date_of_first_interaction,
-                    date_of_last_interaction,
-                    additional_info,
-                    dataset_name
-                FROM {BRONZE_SCHEMA}.{BRONZE_TABLE};
+                   selector_a,
+                   selector_b,
+                   name_a,
+                   name_b,
+                   date_of_interaction,
+                   additional_info,
+                   comment,
+                   dataset_name
+                FROM {BRONZE_SCHEMA}.{TABLE_NAME};
                 """
             )
             rows = cur.fetchall()
             col_names = [desc[0] for desc in cur.description]
 
         df = pl.DataFrame(rows, schema=col_names, orient="row")
+        print("bronze:")
+        print(df.head())
+        # Fill nulls in column "b" with 0
+        # df = df.with_columns(
+        #     pl.col("contact").fill_null("None"),
+        #     pl.col("target").fill_null("None")
+        # )
 
         # 2) Transform with Polars
         df = df.with_columns(
             [
-                pl.col("contact").map_elements(normalize_phone_cn),
-                pl.col("target").map_elements(normalize_phone_cn),
-                pl.col("person_a").map_elements(normalize_name),
-                pl.col("person_b").map_elements(normalize_name),
-                pl.col("date_of_first_interaction").map_elements(normalize_date),
-                pl.col("date_of_last_interaction").map_elements(normalize_date),
-                pl.col("additional_info").map_elements(normalize_empty),
-                pl.col("dataset_name").map_elements(normalize_empty),
+                pl.col("selector_a").fill_null(NONE).map_elements(normalize_phone_cn,  return_dtype=pl.Utf8),
+                pl.col("selector_b").fill_null(NONE).map_elements(normalize_phone_cn,  return_dtype=pl.Utf8),
+                pl.col("name_a").fill_null(NONE).map_elements(normalize_name,  return_dtype=pl.Utf8),
+                pl.col("name_b").fill_null(NONE).map_elements(normalize_name,  return_dtype=pl.Utf8),
+                pl.col("date_of_interaction").fill_null(NONE).map_elements(normalize_date,  return_dtype=pl.Utf8),
+                # pl.col("date_of_last_interaction").fill_null(NONE).map_elements(normalize_date,  return_dtype=pl.Utf8),
+                pl.col("additional_info").fill_null(NONE).map_elements(normalize_empty,  return_dtype=pl.Utf8),
+                pl.col("comment").fill_null(NONE).map_elements(normalize_empty, return_dtype=pl.Utf8),
+                pl.col("dataset_name").fill_null(NONE).map_elements(normalize_empty,  return_dtype=pl.Utf8),
             ]
         )
+        print("normalized df:")
+        print(df.head())
 
         # 3) Create silver table and bulk-insert
         with conn.cursor() as cur:
             cur.execute(f"CREATE SCHEMA IF NOT EXISTS {SILVER_SCHEMA};")
 
-            cur.execute(f"DROP TABLE IF EXISTS {SILVER_SCHEMA}.{SILVER_TABLE};")
+            cur.execute(f"DROP TABLE IF EXISTS {SILVER_SCHEMA}.{TABLE_NAME};")
             cur.execute(
                 f"""
-                CREATE TABLE {SILVER_SCHEMA}.{SILVER_TABLE} (
+                CREATE TABLE {SILVER_SCHEMA}.{TABLE_NAME} (
                     _dlt_id TEXT,
                     _dlt_load_id TEXT,
-                    contact TEXT,
-                    target TEXT,
-                    person_a TEXT,
-                    person_b TEXT,
-                    date_of_first_interaction TEXT,
-                    date_of_last_interaction TEXT,
+                    selector_a TEXT,
+                    selector_b TEXT,
+                    name_a TEXT,
+                    name_b TEXT,
+                    date_of_interaction TEXT,
                     additional_info TEXT,
+                    comment TEXT,
                     dataset_name TEXT
                 );
                 """
@@ -137,29 +161,29 @@ def main():
                 [
                     "_dlt_id",
                     "_dlt_load_id",
-                    "contact",
-                    "target",
-                    "person_a",
-                    "person_b",
-                    "date_of_first_interaction",
-                    "date_of_last_interaction",
+                    "selector_a",
+                    "selector_b",
+                    "name_a",
+                    "name_b",
+                    "date_of_interaction",
                     "additional_info",
+                    "comment",
                     "dataset_name",
                 ]
             ).rows()  # returns list[tuple]  # to_tuples()
 
             insert_sql = f"""
-                INSERT INTO {SILVER_SCHEMA}.{SILVER_TABLE} (
+                INSERT INTO {SILVER_SCHEMA}.{TABLE_NAME} (
                     _dlt_id,
                     _dlt_load_id,
-                    contact,
-                    target,
-                    person_a,
-                    person_b,
-                    date_of_first_interaction,
-                    date_of_last_interaction,
-                    additional_info,
-                    dataset_name
+                   selector_a,
+                   selector_b,
+                   name_a,
+                   name_b,
+                   date_of_interaction,
+                   additional_info,
+                   comment,
+                   dataset_name
                 )
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
             """

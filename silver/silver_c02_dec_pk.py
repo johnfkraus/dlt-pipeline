@@ -4,8 +4,7 @@ from common_utils import normalize_date, normalize_name, normalize_phone_cn, nor
 
 BRONZE_SCHEMA_PREFIX = "bronze"
 SILVER_SCHEMA = "silver"
-BRONZE_TABLE = "c02_bronze"
-SILVER_TABLE = "c02_silver"
+TABLE_NAME = "c02"
 
 def main():
     conn = psycopg2.connect(
@@ -20,10 +19,10 @@ def main():
 
     cur.execute(f"CREATE SCHEMA IF NOT EXISTS {SILVER_SCHEMA};")
 
-    cur.execute(f"DROP TABLE IF EXISTS {SILVER_SCHEMA}.{SILVER_TABLE};")
+    cur.execute(f"DROP TABLE IF EXISTS {SILVER_SCHEMA}.{TABLE_NAME};")
     cur.execute(
         f"""
-        CREATE TABLE {SILVER_SCHEMA}.{SILVER_TABLE} (
+        CREATE TABLE {SILVER_SCHEMA}.{TABLE_NAME} (
             _dlt_id TEXT,
             _dlt_load_id TEXT,
             selector_a TEXT,
@@ -37,7 +36,7 @@ def main():
         );
         """
     )
-    BRONZE_SCHEMA = get_latest_schema_containing_named_table(conn, BRONZE_SCHEMA_PREFIX, BRONZE_TABLE)
+    BRONZE_SCHEMA = get_latest_schema_containing_named_table(conn, BRONZE_SCHEMA_PREFIX, TABLE_NAME)
 
     cur.execute(
         f"""
@@ -51,7 +50,7 @@ def main():
                additional_info,
                comment,
                dataset_name
-        FROM {BRONZE_SCHEMA}.{BRONZE_TABLE};
+        FROM {BRONZE_SCHEMA}.{TABLE_NAME};
         """
     )
 
@@ -81,7 +80,7 @@ def main():
 
         cur.execute(
             f"""
-            INSERT INTO {SILVER_SCHEMA}.{SILVER_TABLE} (
+            INSERT INTO {SILVER_SCHEMA}.{TABLE_NAME} {} (
                 _dlt_id,
                 _dlt_load_id,
                 selector_a,

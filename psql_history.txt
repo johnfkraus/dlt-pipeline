@@ -1,0 +1,260 @@
+
+
+
+
+psql (17.7)
+Type "help" for help.
+
+comms=# \d
+Did not find any relations.
+comms=# \c
+You are now connected to database "comms" as user "postgres".
+comms=# \?
+General
+  \bind [PARAM]...       set query parameters
+  \copyright             show PostgreSQL usage and distribution terms
+  \crosstabview [COLUMNS] execute query and display result in crosstab
+  \errverbose            show most recent error message at maximum verbosity
+  \g [(OPTIONS)] [FILE]  execute query (and send result to file or |pipe);
+                         \g with no arguments is equivalent to a semicolon
+  \gdesc                 describe result of query, without executing it
+  \gexec                 execute query, then execute each value in its result
+  \gset [PREFIX]         execute query and store result in psql variables
+  \gx [(OPTIONS)] [FILE] as \g, but forces expanded output mode
+  \q                     quit psql
+  \restrict RESTRICT_KEY
+                         enter restricted mode with provided key
+  \unrestrict RESTRICT_KEY
+                         exit restricted mode if key matches
+  \watch [[i=]SEC] [c=N] [m=MIN]
+                         execute query every SEC seconds, up to N times,
+                         stop if less than MIN rows are returned
+
+Help
+  \? [commands]          show help on backslash commands
+  \? options             show help on psql command-line options
+  \? variables           show help on special variables
+  \h [NAME]              help on syntax of SQL commands, * for all commands
+
+Query Buffer
+  \e [FILE] [LINE]       edit the query buffer (or file) with external editor
+  \ef [FUNCNAME [LINE]]  edit function definition with external editor
+  \ev [VIEWNAME [LINE]]  edit view definition with external editor
+  \p                     show the contents of the query buffer
+  \r                     reset (clear) the query buffer
+  \s [FILE]              display history or save it to file
+  \w FILE                write query buffer to file
+
+Input/Output
+  \copy ...              perform SQL COPY with data stream to the client host
+  \echo [-n] [STRING]    write string to standard output (-n for no newline)
+  \i FILE                execute commands from file
+  \ir FILE               as \i, but relative to location of current script
+  \o [FILE]              send all query results to file or |pipe
+  \qecho [-n] [STRING]   write string to \o output stream (-n for no newline)
+  \warn [-n] [STRING]    write string to standard error (-n for no newline)
+
+Conditional
+  \if EXPR               begin conditional block
+  \elif EXPR             alternative within current conditional block
+  \else                  final alternative within current conditional block
+  \endif                 end conditional block
+
+Informational
+  (options: S = show system objects, + = additional detail)
+  \d[S+]                 list tables, views, and sequences
+  \d[S+]  NAME           describe table, view, sequence, or index
+  \da[S]  [PATTERN]      list aggregates
+  \dA[+]  [PATTERN]      list access methods
+  \dAc[+] [AMPTRN [TYPEPTRN]]  list operator classes
+  \dAf[+] [AMPTRN [TYPEPTRN]]  list operator families
+  \dAo[+] [AMPTRN [OPFPTRN]]   list operators of operator families
+  \dAp[+] [AMPTRN [OPFPTRN]]   list support functions of operator families
+  \db[+]  [PATTERN]      list tablespaces
+  \dc[S+] [PATTERN]      list conversions
+  \dconfig[+] [PATTERN]  list configuration parameters
+  \dC[+]  [PATTERN]      list casts
+  \dd[S]  [PATTERN]      show object descriptions not displayed elsewhere
+  \dD[S+] [PATTERN]      list domains
+  \ddp    [PATTERN]      list default privileges
+  \dE[S+] [PATTERN]      list foreign tables
+  \des[+] [PATTERN]      list foreign servers
+  \det[+] [PATTERN]      list foreign tables
+  \deu[+] [PATTERN]      list user mappings
+  \dew[+] [PATTERN]      list foreign-data wrappers
+  \df[anptw][S+] [FUNCPTRN [TYPEPTRN ...]]
+                         list [only agg/normal/procedure/trigger/window] functions
+  \dF[+]  [PATTERN]      list text search configurations
+  \dFd[+] [PATTERN]      list text search dictionaries
+  \dFp[+] [PATTERN]      list text search parsers
+  \dFt[+] [PATTERN]      list text search templates
+  \dg[S+] [PATTERN]      list roles
+  \di[S+] [PATTERN]      list indexes
+  \dl[+]                 list large objects, same as \lo_list
+  \dL[S+] [PATTERN]      list procedural languages
+  \dm[S+] [PATTERN]      list materialized views
+  \dn[S+] [PATTERN]      list schemas
+  \do[S+] [OPPTRN [TYPEPTRN [TYPEPTRN]]]
+                         list operators
+  \dO[S+] [PATTERN]      list collations
+  \dp[S]  [PATTERN]      list table, view, and sequence access privileges
+  \dP[itn+] [PATTERN]    list [only index/table] partitioned relations [n=nested]
+  \drds [ROLEPTRN [DBPTRN]] list per-database role settings
+
+
+
+comms-# \db
+       List of tablespaces
+    Name    |  Owner   | Location
+------------+----------+----------
+ pg_default | postgres |
+ pg_global  | postgres |
+(2 rows)
+
+comms-# \dn
+                 List of schemas
+             Name             |       Owner
+------------------------------+-------------------
+ bronze_20260228030312        | postgres
+ bronze_20260228030634        | postgres
+ bronze_20260228030805        | postgres
+ bronze_20260228033541        | postgres
+ bronze_20260228033856        | postgres
+ gold                         | postgres
+ ingest_json                  | postgres
+ public                       | pg_database_owner
+ schem_abronze_20260228033956 | postgres
+ schema_bronze_20260228034021 | postgres
+ schema_bronze_20260228034101 | postgres
+ silver                       | postgres
+(12 rows)
+
+
+comms-# \dt ingest_json.*
+              List of relations
+   Schema    |    Name    | Type  |  Owner
+-------------+------------+-------+----------
+ ingest_json | my_data    | table | postgres
+ ingest_json | raw_import | table | postgres
+(2 rows)
+
+
+comms=# set search_path to ingest_json, public;
+SET
+comms=# \dt
+              List of relations
+   Schema    |    Name    | Type  |  Owner
+-------------+------------+-------+----------
+ ingest_json | my_data    | table | postgres
+ ingest_json | raw_import | table | postgres
+(2 rows)
+
+comms=# \! pwd
+/
+
+comms=# \! ls
+Applications    Users           cores           home            sbin            var
+Library         Volumes         dev             opt             tmp
+System          bin             etc             private         usr
+
+comms=# \cd Users/blauerbock/workspaces/dlt-pipeline
+
+comms=# \! ls
+__pycache__             common_utils.py         gold_c02_dec_pk.py      silver_c01_dec_pk.py
+archives                data                    gold_c03_dec_pk.py      silver_c01_polars.py
+bronze_c01_dec_pk.py    db_config.py            gold_datamart.py        silver_c02_dec_pk.py
+bronze_c01_polars2.py   dlt_dev_config.py       gold_datamart_dec_pk.py silver_c03_dec_pk.py
+bronze_c02_dec_pk.py    docs                    ingest_json             sql
+bronze_c03_dec_pk.py    gold_c01_dec_pk.py      notes.md                timer.py
+comms=# \cd data
+
+comms=# \! ls
+csv     xlsx
+
+comms=# \cd ../ingest_json
+
+comms=# \! ls
+I have a file containing a json array of deeply ne (1).md
+I have a file containing a json array of deeply ne.md
+README.md
+create_tables.sql
+data1.json
+data_lines.json
+
+comms=# \copy raw_import(doc) FROM 'data_lines.json';
+COPY 2
+
+comms=# \dt
+              List of relations
+   Schema    |    Name    | Type  |  Owner
+-------------+------------+-------+----------
+ ingest_json | my_data    | table | postgres
+ ingest_json | raw_import | table | postgres
+(2 rows)
+
+comms=# select * from raw_import;
+                        doc
+----------------------------------------------------
+ {"id": 1, "name": "Alice", "details": {"age": 30}}
+ {"id": 2, "name": "Bob", "details": {"age": 25}}
+(2 rows)
+
+comms=# select * from raw_import;
+                        doc
+----------------------------------------------------
+ {"id": 1, "name": "Alice", "details": {"age": 30}}
+ {"id": 2, "name": "Bob", "details": {"age": 25}}
+(2 rows)
+
+comms=#
+
+CREATE SCHEMA ingest_json;
+
+CREATE TABLE ingest_json.raw_import (doc jsonb);
+
+DROP TABLE IF EXISTS ingest_json.my_data;
+
+CREATE TABLE ingest_json.my_data (
+  id      integer,
+  name    text,
+  age     integer,
+  details jsonb
+);
+
+INSERT INTO INGEST_JSON.my_data (id, name, age, details)
+SELECT (doc->>'id')::int                    AS id,
+       doc->>'name'                         AS name,
+       (doc->'details'->>'age')::int        AS age,
+       doc->'details'                       AS details
+FROM ingest_json.raw_import;
+
+select * from ingest_json.my_data;
+
+
+
+CREATE TABLE ingest_json.my_data (
+  id     integer,
+  name   text,
+  details jsonb
+);
+
+
+
+INSERT INTO ingest_json.my_data (id, name, details)
+SELECT (obj->>'id')::int        AS id,
+       obj->>'name'             AS name,
+       obj->'details'           AS details
+FROM ingest_json.raw_import,
+     jsonb_array_elements(doc) AS obj;
+
+
+
+-- See some raw values
+SELECT doc
+FROM ingest_json.raw_import
+LIMIT 5;
+
+-- Check the JSON type per row
+SELECT jsonb_typeof(doc) AS type, count(*)
+FROM ingest_json.raw_import
+GROUP BY jsonb_typeof(doc);

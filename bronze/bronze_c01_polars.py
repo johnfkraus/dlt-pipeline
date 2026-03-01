@@ -4,7 +4,7 @@ import dlt
 import polars as pl
 from timer import  get_time
 
-EXCEL_FILE_NAME = "c01.xlsx"
+EXCEL_FILE_NAME = "c01_edge.xlsx"
 SCHEMA_NAME = "bronze"
 EXCEL_FILE_PATH = f"../data/xlsx/{EXCEL_FILE_NAME}"
 PIPELINE_NAME = f"{SCHEMA_NAME}_{EXCEL_FILE_NAME.removesuffix('.xlsx')}"
