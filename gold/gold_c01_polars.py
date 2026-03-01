@@ -156,6 +156,7 @@ def main():
             for rec in records:
                 print(f"{rec=}")
                 other_info_json_dict = {
+                    "additional_info": rec["other_info"]["additional_info"],
                     "contact": rec["other_info"]["contact"],
                     "target": rec["other_info"]["target"],
                     "date_of_first_interaction": rec["other_info"]["date_of_first_interaction"],
@@ -193,7 +194,6 @@ def main():
         df = pl.DataFrame(rows, schema=col_names, orient="row")
         print("gold data df.head():")
         print(df.head())
-        # pl.Config.set_fmt_str_lengths(None)
         pl.Config.set_fmt_str_lengths(200)  # Shows up to 100 characters
 
         print(df['other_info'])
