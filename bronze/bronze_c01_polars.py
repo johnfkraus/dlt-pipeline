@@ -3,6 +3,15 @@ from typing import Iterator, Dict, Any
 import dlt
 import polars as pl
 from timer import  get_time
+import sys
+from pathlib import Path
+
+# Get the parent directory and add it to sys.path
+parent_dir = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(parent_dir))
+
+# Import the module
+from print_db import print_db
 
 EXCEL_FILE_NAME = "c01_edge.xlsx"
 SCHEMA_NAME = "bronze"
@@ -63,7 +72,12 @@ def main():
         dev_mode=True
     )
     info = pipeline.run(comms_bronze(excel_path=excel_file_path, sheet_name=0))
-    print(info)
+    # print(f"{info=}")
+
+    schema_name = info.pipeline.dataset_name
+    # print(f"{schema_name=}")
+    print(RESOURCE_NAME)
+    print_db("comms", schema_name, RESOURCE_NAME)
 
 
 if __name__ == "__main__":

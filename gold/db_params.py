@@ -1,6 +1,6 @@
 # gold/db_params.py
 import tomllib
-
+import polars as pl
 
 def load_db_params_from_secrets(
         path: str = ".dlt/secrets.toml",
@@ -39,3 +39,8 @@ def load_db_params_from_secrets(
         "host": dest_cfg.get("host", "localhost"),
         "port": dest_cfg.get("port", 5432),
     }
+
+
+def set_polars_col_width_display(num_characters = 200):
+    pl.Config.set_fmt_str_lengths(num_characters)
+
