@@ -1,4 +1,4 @@
-# gold/print_db.py
+# print_db_adbc.py
 import polars as pl
 import adbc_driver_postgresql.dbapi as pg_adbc  # pip install adbc-driver-postgresql
 
@@ -10,6 +10,14 @@ from common_utils import (
 
 @get_time
 def print_db(database_name, schema_name, table_name):
+    """
+    Print a database table to the console.
+
+    :param database_name:
+    :param schema_name:
+    :param table_name:
+    :return:
+    """
     conn_params = load_db_params_from_secrets()
     uri = f"postgresql://{conn_params['user']}:{conn_params['password']}@{conn_params['host']}:{conn_params['port']}/{database_name}"
 

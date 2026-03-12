@@ -1,4 +1,4 @@
-# gold/print_db.py
+# gold/print_db_adbc.py
 import polars as pl
 import adbc_driver_postgresql.dbapi as pg_adbc  # pip install adbc-driver-postgresql
 
