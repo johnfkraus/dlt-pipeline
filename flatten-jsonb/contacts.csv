@@ -1,0 +1,6 @@
+name_a,name_b,date,phone_a,phone_b,other
+Alice,Smith,2025-01-01,111-111-1111,222-222-2222,"{""age"": 30, ""city"": ""New York"", ""vip"": true}"
+Bob,Jones,2025-01-02,333-333-3333,,"{""age"": 45, ""city"": ""Boston""}"
+Carol,Lee,2025-01-03,,444-444-4444,"{""age"": 28, ""vip"": false, ""preferred_contact"": ""email""}"
+Dave,Khan,2025-01-04,555-555-5555,666-666-6666,"{""city"": ""Chicago""}"
+Eve,Brown,2025-01-05,,, "{}"
